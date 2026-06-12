@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Traffic Management System</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+<h1>🚦 Smart Traffic Management Dashboard</h1>
+<p>Emergency Vehicle Priority & Smart City Monitoring System</p>
+</header>
+
+<!-- Status Dashboard -->
+<section class="dashboard">
+<div class="card">
+<h2>🚑 Emergency Status</h2>
+<div id="emergencyStatus" class="big">NO</div>
+</div>
+<div class="card">
+<h2>🚦 Current Active Lane</h2>
+<div id="currentLane" class="big">Lane 1</div>
+</div>
+<div class="card">
+<h2>🎛️ Control Mode</h2>
+<div id="controlMode" class="big">AUTO</div>
+</div>
+<div class="card">
+<h2>🌙 Street Lights</h2>
+<div id="streetLight" class="big">OFF</div>
+<div id="streetMode" style="font-size:14px;color:#888;">AUTO MODE</div>
+</div>
+<div class="card">
+<h2>💡 Light Sensor (LDR)</h2>
+<div id="ldrValue" class="big">0</div>
+<div style="font-size:14px;color:#888;">0-4095 (Lower = Darker)</div>
+</div>
+<div class="card">
+<h2>📈 Peak Traffic</h2>
+<div id="peakLane" class="big">Lane 1</div>
+</div>
+<div class="card">
+<h2>🚗 Total Vehicles</h2>
+<div id="vehicleCount" class="big">0</div>
+</div>
+<div class="card">
+<h2>📶 Connection Status</h2>
+<div id="connectionStatus" class="big statusOnline">CONNECTING...</div>
+</div>
+</section>
+
+<!-- Traffic Light Intersection -->
+<section class="intersection">
+<div class="road">
+<div class="emergency-indicator" id="emg1">🚑</div>
+<h2>Lane 1</h2>
+<div id="densityBadge1" class="density-badge"></div>
+<div id="emergencyBadge1"></div>
+<div id="timer1" class="timer inactive">⏱️ --</div>
+<div class="traffic">
+<div id="r1" class="light red"></div>
+<div id="y1" class="light yellow"></div>
+<div id="g1" class="light green"></div>
+</div>
+</div>
+<div class="road">
+<div class="emergency-indicator" id="emg2">🚑</div>
+<h2>Lane 2</h2>
+<div id="densityBadge2" class="density-badge"></div>
+<div id="emergencyBadge2"></div>
+<div id="timer2" class="timer inactive">⏱️ --</div>
+<div class="traffic">
+<div id="r2" class="light red"></div>
+<div id="y2" class="light yellow"></div>
+<div id="g2" class="light green"></div>
+</div>
+</div>
+<div class="road">
+<div class="emergency-indicator" id="emg3">🚑</div>
+<h2>Lane 3</h2>
+<div id="densityBadge3" class="density-badge"></div>
+<div id="emergencyBadge3"></div>
+<div id="timer3" class="timer inactive">⏱️ --</div>
+<div class="traffic">
+<div id="r3" class="light red"></div>
+<div id="y3" class="light yellow"></div>
+<div id="g3" class="light green"></div>
+</div>
+</div>
+<div class="road">
+<div class="emergency-indicator" id="emg4">🚑</div>
+<h2>Lane 4</h2>
+<div id="densityBadge4" class="density-badge"></div>
+<div id="emergencyBadge4"></div>
+<div id="timer4" class="timer inactive">⏱️ --</div>
+<div class="traffic">
+<div id="r4" class="light red"></div>
+<div id="y4" class="light yellow"></div>
+<div id="g4" class="light green"></div>
+</div>
+</div>
+</section>
+
+<!-- Control Buttons -->
+<section class="controls">
+<h2 style="width:100%; text-align:center; color:#aad4ff; margin-bottom:20px;">🎛️ Traffic Light Manual Control</h2>
+<button onclick="manualLane(1)" style="background:#FF6384;">🚦 Lane 1 GREEN</button>
+<button onclick="manualLane(2)" style="background:#36A2EB;">🚦 Lane 2 GREEN</button>
+<button onclick="manualLane(3)" style="background:#FFCE56; color:#000;">🚦 Lane 3 GREEN</button>
+<button onclick="manualLane(4)" style="background:#4BC0C0;">🚦 Lane 4 GREEN</button>
+<button onclick="allRed()" style="background:#dc3545;">🛑 ALL RED</button>
+<button onclick="autoMode()" style="background:#28a745;">🤖 AUTO MODE</button>
+</section>
+
+<section class="controls">
+<h2 style="width:100%; text-align:center; color:#aad4ff; margin-bottom:20px;">🚑 Emergency Control</h2>
+<button onclick="manualEmergency(1)" style="background:#ff4444;">🚑 Emergency Lane 1</button>
+<button onclick="manualEmergency(2)" style="background:#ff4444;">🚑 Emergency Lane 2</button>
+<button onclick="manualEmergency(3)" style="background:#ff4444;">🚑 Emergency Lane 3</button>
+<button onclick="manualEmergency(4)" style="background:#ff4444;">🚑 Emergency Lane 4</button>
+<button onclick="emergencyOff()" style="background:#F44336;">❌ Clear Emergency</button>
+</section>
+
+<section class="controls">
+<h2 style="width:100%; text-align:center; color:#aad4ff; margin-bottom:20px;">💡 Street Light Control</h2>
+<button onclick="streetON()">💡 Street ON</button>
+<button onclick="streetOFF()">💡 Street OFF</button>
+<button onclick="streetAuto()" style="background:#4CAF50;">💡 Street AUTO</button>
+</section>
+
+<!-- Charts -->
+<section class="charts">
+<div class="chartBox">
+<h2>📊 Vehicle Analytics</h2>
+<canvas id="vehicleChart"></canvas>
+</div>
+<div class="chartBox">
+<h2>📈 Traffic Density</h2>
+<canvas id="densityChart"></canvas>
+</div>
+</section>
+
+<!-- Live Logs -->
+<section class="logs">
+<h2>📜 Live Logs</h2>
+<div class="logContainer" id="logs"></div>
+</section>
+
+<!-- Device Status -->
+<section class="devices">
+<div class="card">
+<h2>ESP32 #1</h2>
+<div class="statusOnline">SENSOR NODE</div>
+</div>
+<div class="card">
+<h2>ESP32 #2</h2>
+<div class="statusOnline">CONTROL NODE</div>
+</div>
+<div class="card">
+<h2>RFID Readers</h2>
+<div class="statusOnline">4 CONNECTED</div>
+</div>
+<div class="card">
+<h2>IR Sensors</h2>
+<div class="statusOnline">4 ACTIVE</div>
+</div>
+</section>
+
+<!-- Configuration Panel -->
+<div class="config-panel" id="configPanel">
+<div class="config-header">
+<h3>⚙️ Configuration</h3>
+<button class="minimize-btn" onclick="toggleConfig()" id="configToggleBtn">−</button>
+</div>
+<div class="config-content" id="configContent">
+<label for="esp32IP">ESP32 #2 IP Address:</label>
+<input type="text" id="esp32IP" placeholder="192.168.1.100" value="192.168.1.100">
+<button onclick="saveConfig()">Save & Connect</button>
+</div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
