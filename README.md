@@ -18,8 +18,6 @@ A complete smart traffic management system using **two ESP32 microcontrollers** 
 - ✅ **Live Web Dashboard** with real-time graphs
 - ✅ **Automatic Street Lights** (LDR sensor)
 - ✅ **Manual Override Controls**
-- ✅ **Demo Mode** (works without sensors for presentations)
-
 ---
 
 ## 📁 File Structure
